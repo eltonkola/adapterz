@@ -1,1 +1,2 @@
-include ':app', ':adapterz_lib'
+include ':app'
+include ':adapterz_lib'

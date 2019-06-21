@@ -2,8 +2,9 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
-apply plugin: 'maven-publish'
+
 
 android {
     compileSdkVersion 28
@@ -46,58 +47,36 @@ repositories {
 }
 
 
-//this is a library so we need to publish it
-
-
 ext {
-    core_group = "com.eltonkola"
-    core_version = "0.0.1"
+    bintrayRepo = 'maven'
+    bintrayName = 'com.eltonkola:adapterz'
+
+    publishedGroupId = 'com.eltonkola'
+    artifact = 'adapterz'
+    libraryVersion = '0.0.1'
+
+    libraryName = 'AdapterZ'
+    libraryDescription = 'No more adapters for your recyclerviews.'
+
+    siteUrl = 'https://github.com/eltonkola/adapterz'
+    gitUrl = 'https://github.com/eltonkola/adapterz.git'
+
+    developerId = 'eltonkola'
+    developerName = 'Elton Kola'
+    developerEmail = 'eltonkola@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+
+    //Bintray Credentials
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+    bintrayUsername = properties.getProperty('bintray.user')
+    bintrayUserOrg = properties.getProperty('bintray.user')
+    bintrayApiKey = properties.getProperty('bintray.apikey')
 }
 
-publishing {
-    publications {
-        library(MavenPublication) {
-            artifact("$buildDir/outputs/aar/adapterz_lib-release.aar")
-            groupId core_group
-            artifactId 'adapterz'
-            version core_version
 
-            //The publication doesn't know about our dependencies, so we have to manually add them to the pom
-            pom.withXml {
-                def dependenciesNode = asNode().appendNode('dependencies')
-
-                //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
-                configurations.compile.allDependencies.each {
-                    def dependencyNode = dependenciesNode.appendNode('dependency')
-                    dependencyNode.appendNode('groupId', it.group)
-                    dependencyNode.appendNode('artifactId', it.name)
-                    dependencyNode.appendNode('version', it.version)
-                }
-            }
-        }
-    }
-}
-
-
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
-bintray {
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
-    configurations = ['archives']
-    pkg {
-        repo = 'maven'
-        name = project.name
-        userOrg = 'eltonkola'
-        version core_version
-        licenses = ['Apache-2.0']
-        desc = 'Simple android lib for easy adapters'
-        websiteUrl = "https://eltonkola.com"
-        vcsUrl = 'https://github.com/eltonkola/adapterz'
-        publish = true
-    }
-    publications = ['library']
-
-}
-
+apply from: 'publish.gradle'
