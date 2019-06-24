@@ -1,8 +1,9 @@
 package com.eltonkola.adapterz_lib
 
 interface BaseDataItem {
+
     fun getItemViewType(): Int {
-        return this.javaClass.canonicalName.hashCode()
+        return this::class.getIdz()
     }
 
     open fun hashCodeZ(): Int {

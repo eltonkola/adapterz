@@ -30,85 +30,17 @@ class MainActivity : AppCompatActivity() {
         val adapter = AdapterZ(pool)
 
         //simple binders
-        /*
-        adapter.addRenderer(ViewRenderZ<HeaderItem>(R.layout.row_header) { vh, model ->
-            vh.itemView.title_header.text = model.title
-            true
-        })
-
-        adapter.addRenderer(ViewRenderZ<KokaItem>(R.layout.row_koka) { vh, model ->
-            vh.itemView.title_koka.text = model.title
-            true
-        })
-        */
-
         adapter.addRenderer(headerRenderer())
         adapter.addRenderer(kokaRenderer())
 
 
         //one level deep composed binder
-        /*
-        adapter.addRenderer(CompositeViewRenderZ<AlfabetiItem>(
-            R.layout.row_alfabeti_container,
-            { vh, model ->
-                vh.itemView.container_title.text = model.name
-                Picasso.get().load(model.flagUrl).into(vh.itemView.container_icon)
-                true
-            },
-            R.id.childRecycler,
-            { recycler ->
-                true
-            }
-        ).apply {
-            addRenderer(ViewRenderZ<GermaItem>(R.layout.row_germa) { vh, model ->
-                vh.itemView.title_germa.text = model.germa
-                true
-            })
-        })
-        */
-
         adapter.addRenderer(alfabetiItemRenderer().apply {
             addRenderer(germaItemRenderer())
         })
 
 
         //two level deep composed binder
-        /*
-        adapter.addRenderer(CompositeViewRenderZ<AlfabetiV2Item>(
-            R.layout.row_alfabeti_container,
-            { vh, model ->
-                vh.itemView.container_title.text = model.name
-                Picasso.get().load(model.flagUrl).into(vh.itemView.container_icon)
-                true
-            },
-            R.id.childRecycler,
-            { recycler ->
-                true
-            }
-        ).apply {
-
-            addRenderer(CompositeViewRenderZ<GermaFjaleItem>(
-                R.layout.row_alfabeti_fjale,
-                { vh, model ->
-                    vh.itemView.container_title.text = model.germa
-                    true
-                },
-                R.id.childRecyclerFjalet,
-                { recycler ->
-                    recycler.layoutManager = LinearLayoutManager(recycler.context, RecyclerView.VERTICAL, false)
-                    recycler.setHasFixedSize(true)
-                    true
-                }
-            ).apply {
-                addRenderer(ViewRenderZ<FjalaItem>(R.layout.row_emri) { vh, model ->
-                    vh.itemView.title_emri.text = model.fjala
-                    true
-                })
-            })
-
-
-        })
-        */
 
         adapter.addRenderer(alfabetiV2ItemRenderer().apply {
             addRenderer(germaFjaleItemRenderer().apply {
@@ -191,6 +123,7 @@ class DemoViewModel : ViewModel() {
                     "R", "Rr", "S", "Sh", "T", "Th", "U", "V", "X", "Xh", "Y", "Z", "Zh"
                 ).map { GermaItem(it) })
         )
+
 
         data.add(
             AlfabetiV2Item(

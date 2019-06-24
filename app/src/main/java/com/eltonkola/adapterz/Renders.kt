@@ -1,12 +1,15 @@
 package com.eltonkola.adapterz
 
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.eltonkola.adapterz_lib.CompositeViewRenderZ
+import com.eltonkola.adapterz_lib.ViewHolderz
 import com.eltonkola.adapterz_lib.ViewRenderZ
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.row_alfabeti_container.view.*
-import kotlinx.android.synthetic.main.row_alfabeti_fjale.view.container_title
 import kotlinx.android.synthetic.main.row_emri.view.*
 import kotlinx.android.synthetic.main.row_germa.view.*
 import kotlinx.android.synthetic.main.row_header.view.*
@@ -14,80 +17,144 @@ import kotlinx.android.synthetic.main.row_koka.view.*
 
 //1
 fun headerRenderer(): ViewRenderZ<HeaderItem> {
-    return ViewRenderZ(R.layout.row_header) { vh, model ->
-        vh.itemView.title_header.text = model.title
-        true
-    }
+    return ViewRenderZ(object : ViewHolderz<HeaderItem>(R.layout.row_header, HeaderItem::class) {
+
+        lateinit var title_header: TextView
+
+        override fun initViewHolder(view: View) {
+            title_header = view.title_header
+        }
+
+        override fun doBind(model: HeaderItem) {
+            title_header.text = model.title
+        }
+    })
 }
 
 fun kokaRenderer(): ViewRenderZ<KokaItem> {
-    return ViewRenderZ(R.layout.row_koka) { vh, model ->
-        vh.itemView.title_koka.text = model.title
-        true
-    }
+    return ViewRenderZ(object : ViewHolderz<KokaItem>(R.layout.row_koka, KokaItem::class) {
+
+        lateinit var title_koka: TextView
+
+        override fun initViewHolder(view: View) {
+            title_koka = view.title_koka
+        }
+
+        override fun doBind(model: KokaItem) {
+            title_koka.text = model.title
+        }
+    })
 }
 
 
 //2
 fun alfabetiItemRenderer(): CompositeViewRenderZ<AlfabetiItem> {
+
     return CompositeViewRenderZ(
-        R.layout.row_alfabeti_container,
-        { vh, model ->
-            vh.itemView.container_title.text = model.name
-            Picasso.get().load(model.flagUrl).into(vh.itemView.container_icon)
-            true
+        object :
+            ViewHolderz<AlfabetiItem>(R.layout.row_alfabeti_container, AlfabetiItem::class) {
+
+            lateinit var container_title: TextView
+            lateinit var container_icon: ImageView
+
+            override fun initViewHolder(view: View) {
+                container_title = view.container_title
+                container_icon = view.container_icon
+            }
+
+            override fun doBind(model: AlfabetiItem) {
+                container_title.text = model.name
+                Picasso.get().load(model.flagUrl).into(container_icon)
+            }
         },
-        R.id.childRecycler,
-        { recycler ->
-            true
-        }
-    )
+        R.id.childRecycler
+    ) {
+
+    }
+
 }
 
 fun germaItemRenderer(): ViewRenderZ<GermaItem> {
-    return ViewRenderZ(R.layout.row_germa) { vh, model ->
-        vh.itemView.title_germa.text = model.germa
-        true
-    }
+
+    return ViewRenderZ(object : ViewHolderz<GermaItem>(R.layout.row_germa, GermaItem::class) {
+
+        lateinit var title_germa: TextView
+
+        override fun initViewHolder(view: View) {
+            title_germa = view.title_germa
+        }
+
+        override fun doBind(model: GermaItem) {
+            title_germa.text = model.germa
+        }
+    })
 }
 
 
-//3
+////3
 fun alfabetiV2ItemRenderer(): CompositeViewRenderZ<AlfabetiV2Item> {
+
     return CompositeViewRenderZ(
-        R.layout.row_alfabeti_container,
-        { vh, model ->
-            vh.itemView.container_title.text = model.name
-            Picasso.get().load(model.flagUrl).into(vh.itemView.container_icon)
-            true
+        object :
+            ViewHolderz<AlfabetiV2Item>(R.layout.row_alfabeti_container, AlfabetiV2Item::class) {
+
+            lateinit var container_title: TextView
+            lateinit var container_icon: ImageView
+
+            override fun initViewHolder(view: View) {
+                container_title = view.container_title
+                container_icon = view.container_icon
+            }
+
+            override fun doBind(model: AlfabetiV2Item) {
+                container_title.text = model.name
+                Picasso.get().load(model.flagUrl).into(container_icon)
+            }
         },
-        R.id.childRecycler,
-        { recycler ->
-            true
-        }
-    )
+        R.id.childRecycler
+    ) { recycler ->
+
+    }
 }
 
 
 fun germaFjaleItemRenderer(): CompositeViewRenderZ<GermaFjaleItem> {
+
     return CompositeViewRenderZ(
-        R.layout.row_alfabeti_fjale,
-        { vh, model ->
-            vh.itemView.container_title.text = model.germa
-            true
+        object :
+            ViewHolderz<GermaFjaleItem>(R.layout.row_alfabeti_fjale, GermaFjaleItem::class) {
+
+            lateinit var container_title: TextView
+
+            override fun initViewHolder(view: View) {
+                container_title = view.container_title
+            }
+
+            override fun doBind(model: GermaFjaleItem) {
+                container_title.text = model.germa
+            }
         },
-        R.id.childRecyclerFjalet,
-        { recycler ->
-            recycler.layoutManager = LinearLayoutManager(recycler.context, RecyclerView.VERTICAL, false)
-            recycler.setHasFixedSize(true)
-            true
-        }
-    )
+        R.id.childRecyclerFjalet
+    ) { recycler ->
+        recycler.layoutManager = LinearLayoutManager(recycler.context, RecyclerView.VERTICAL, false)
+        recycler.setHasFixedSize(true)
+    }
 }
 
+
 fun fjalaItemRenderer(): ViewRenderZ<FjalaItem> {
-    return ViewRenderZ(R.layout.row_emri) { vh, model ->
-        vh.itemView.title_emri.text = model.fjala
-        true
-    }
+
+    return ViewRenderZ(object : ViewHolderz<FjalaItem>(R.layout.row_emri, FjalaItem::class) {
+
+        lateinit var title_emri: TextView
+
+        override fun initViewHolder(view: View) {
+            title_emri = view.title_emri
+        }
+
+        override fun doBind(model: FjalaItem) {
+            title_emri.text = model.fjala
+        }
+    })
+
 }
