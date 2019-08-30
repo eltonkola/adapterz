@@ -9,8 +9,8 @@ fun String.logz() {
 
 
 fun KClass<out BaseDataItem>.getIdz(): Int {
-    ">>> BaseDataItem canonicalName: = ${this.java.canonicalName}".logz()
-    ">>> BaseDataItem getItemViewType: = ${this.java.canonicalName.hashCode()}".logz()
+//    ">>> BaseDataItem canonicalName: = ${this.java.canonicalName}".logz()
+//    ">>> BaseDataItem getItemViewType: = ${this.java.canonicalName.hashCode()}".logz()
 //    return this.java.canonicalName.hashCode()
     return this.hashCode()
 }

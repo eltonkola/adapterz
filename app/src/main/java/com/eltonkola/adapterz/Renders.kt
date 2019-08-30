@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.eltonkola.adapterz_lib.CompositeViewRenderZ
 import com.eltonkola.adapterz_lib.ViewHolderz
 import com.eltonkola.adapterz_lib.ViewRenderZ
+import com.eltonkola.adapterz_lib.logz
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.row_alfabeti_container.view.*
 import kotlinx.android.synthetic.main.row_emri.view.*
@@ -17,7 +18,7 @@ import kotlinx.android.synthetic.main.row_koka.view.*
 
 //1
 fun headerRenderer(): ViewRenderZ<HeaderItem> {
-    return ViewRenderZ(object : ViewHolderz<HeaderItem>(R.layout.row_header, HeaderItem::class) {
+    return ViewRenderZ (HeaderItem::class){object : ViewHolderz<HeaderItem>(R.layout.row_header, HeaderItem::class) {
 
         lateinit var title_header: TextView
 
@@ -27,12 +28,13 @@ fun headerRenderer(): ViewRenderZ<HeaderItem> {
 
         override fun doBind(model: HeaderItem) {
             title_header.text = model.title
+            "DoBind >>>>>>>>>>>>>>>>>>>> ${model.title}".logz()
         }
-    })
+    }}
 }
 
 fun kokaRenderer(): ViewRenderZ<KokaItem> {
-    return ViewRenderZ(object : ViewHolderz<KokaItem>(R.layout.row_koka, KokaItem::class) {
+    return ViewRenderZ (KokaItem::class){object : ViewHolderz<KokaItem>(R.layout.row_koka, KokaItem::class) {
 
         lateinit var title_koka: TextView
 
@@ -43,15 +45,15 @@ fun kokaRenderer(): ViewRenderZ<KokaItem> {
         override fun doBind(model: KokaItem) {
             title_koka.text = model.title
         }
-    })
+    }}
 }
 
 
 //2
 fun alfabetiItemRenderer(): CompositeViewRenderZ<AlfabetiItem> {
 
-    return CompositeViewRenderZ(
-        object :
+    return CompositeViewRenderZ(AlfabetiItem::class,
+        {object :
             ViewHolderz<AlfabetiItem>(R.layout.row_alfabeti_container, AlfabetiItem::class) {
 
             lateinit var container_title: TextView
@@ -66,7 +68,7 @@ fun alfabetiItemRenderer(): CompositeViewRenderZ<AlfabetiItem> {
                 container_title.text = model.name
                 Picasso.get().load(model.flagUrl).into(container_icon)
             }
-        },
+        }},
         R.id.childRecycler
     ) {
 
@@ -76,7 +78,7 @@ fun alfabetiItemRenderer(): CompositeViewRenderZ<AlfabetiItem> {
 
 fun germaItemRenderer(): ViewRenderZ<GermaItem> {
 
-    return ViewRenderZ(object : ViewHolderz<GermaItem>(R.layout.row_germa, GermaItem::class) {
+    return ViewRenderZ (GermaItem::class){object : ViewHolderz<GermaItem>(R.layout.row_germa, GermaItem::class) {
 
         lateinit var title_germa: TextView
 
@@ -87,14 +89,14 @@ fun germaItemRenderer(): ViewRenderZ<GermaItem> {
         override fun doBind(model: GermaItem) {
             title_germa.text = model.germa
         }
-    })
+    }}
 }
 
 
 ////3
 fun alfabetiV2ItemRenderer(): CompositeViewRenderZ<AlfabetiV2Item> {
 
-    return CompositeViewRenderZ(
+    return CompositeViewRenderZ(AlfabetiV2Item::class, {
         object :
             ViewHolderz<AlfabetiV2Item>(R.layout.row_alfabeti_container, AlfabetiV2Item::class) {
 
@@ -110,7 +112,7 @@ fun alfabetiV2ItemRenderer(): CompositeViewRenderZ<AlfabetiV2Item> {
                 container_title.text = model.name
                 Picasso.get().load(model.flagUrl).into(container_icon)
             }
-        },
+        }},
         R.id.childRecycler
     ) { recycler ->
 
@@ -120,7 +122,7 @@ fun alfabetiV2ItemRenderer(): CompositeViewRenderZ<AlfabetiV2Item> {
 
 fun germaFjaleItemRenderer(): CompositeViewRenderZ<GermaFjaleItem> {
 
-    return CompositeViewRenderZ(
+    return CompositeViewRenderZ(GermaFjaleItem::class,{
         object :
             ViewHolderz<GermaFjaleItem>(R.layout.row_alfabeti_fjale, GermaFjaleItem::class) {
 
@@ -133,7 +135,7 @@ fun germaFjaleItemRenderer(): CompositeViewRenderZ<GermaFjaleItem> {
             override fun doBind(model: GermaFjaleItem) {
                 container_title.text = model.germa
             }
-        },
+        }},
         R.id.childRecyclerFjalet
     ) { recycler ->
         recycler.layoutManager = LinearLayoutManager(recycler.context, RecyclerView.VERTICAL, false)
@@ -144,7 +146,7 @@ fun germaFjaleItemRenderer(): CompositeViewRenderZ<GermaFjaleItem> {
 
 fun fjalaItemRenderer(): ViewRenderZ<FjalaItem> {
 
-    return ViewRenderZ(object : ViewHolderz<FjalaItem>(R.layout.row_emri, FjalaItem::class) {
+    return ViewRenderZ(FjalaItem::class) {object : ViewHolderz<FjalaItem>(R.layout.row_emri, FjalaItem::class) {
 
         lateinit var title_emri: TextView
 
@@ -155,6 +157,6 @@ fun fjalaItemRenderer(): ViewRenderZ<FjalaItem> {
         override fun doBind(model: FjalaItem) {
             title_emri.text = model.fjala
         }
-    })
+    }}
 
 }

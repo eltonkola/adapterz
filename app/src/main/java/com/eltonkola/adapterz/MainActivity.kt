@@ -1,6 +1,8 @@
 package com.eltonkola.adapterz
 
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -13,8 +15,8 @@ import com.eltonkola.adapterz_lib.BaseComposedDataItem
 import com.eltonkola.adapterz_lib.BaseDataItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.row_header.view.*
 import kotlin.random.Random
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -49,20 +51,42 @@ class MainActivity : AppCompatActivity() {
         })
 
         //title_germa
+//        val vkAdapter = VkAdapter()
+//
+//        vkAdapter.addRenderer(VkRenderer(R.layout.row_header, {
+//            object : VhRenderer<HeaderItem>() {
+//
+//                lateinit var title_header: TextView
+//
+//                override fun initUi(view: View) {
+//                    title_header = view.title_header
+//                }
+//
+//                override fun doBind(item: HeaderItem) {
+//                    title_header.text = item.title
+//                }
+//            }
+//        }, HeaderItem::class))
+
+
+
+        recyclerView.adapter = adapter
 
 
         viewModel.dataList.observe(this, Observer { list ->
             adapter.submitList(list)
+            //vkAdapter.submitList(list)
+
         })
         recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         recyclerView.setHasFixedSize(true)
-        recyclerView.adapter = adapter
+        //recyclerView.adapter = adapter
+
 
         fab.setOnClickListener { view ->
             viewModel.refreshData()
         }
     }
-
 }
 
 data class HeaderItem(val title: String) : BaseDataItem
@@ -73,7 +97,8 @@ data class KokaItem(val title: String) : BaseDataItem
 // 1 level
 data class GermaItem(val germa: String) : BaseDataItem
 
-data class AlfabetiItem(val name: String, val flagUrl: String, val germat: List<GermaItem>) : BaseComposedDataItem {
+data class AlfabetiItem(val name: String, val flagUrl: String, val germat: List<GermaItem>) :
+    BaseComposedDataItem {
     override fun getChildren(): List<GermaItem> {
         return germat
     }
@@ -84,7 +109,11 @@ data class AlfabetiItem(val name: String, val flagUrl: String, val germat: List<
 //2 levels
 data class FjalaItem(val fjala: String) : BaseDataItem
 
-data class AlfabetiV2Item(val name: String, val flagUrl: String, val germatFjalet: List<GermaFjaleItem>) :
+data class AlfabetiV2Item(
+    val name: String,
+    val flagUrl: String,
+    val germatFjalet: List<GermaFjaleItem>
+) :
     BaseComposedDataItem {
     override fun getChildren(): List<GermaFjaleItem> {
         return germatFjalet
@@ -131,14 +160,30 @@ class DemoViewModel : ViewModel() {
                 "https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/shiny/64/Albania.png",
 
                 listOf(
-                    GermaFjaleItem("A", listOf("Alban", "Artan", "Arjan", "Azgan", "AAAA").map { FjalaItem(it) }),
-                    GermaFjaleItem("B", listOf("Besa", "Besmira", "Besjan", "Blearta").map { FjalaItem(it) }),
-                    GermaFjaleItem("C", listOf("Cen", "Cuf", "Car", "Cjap", "CCCC").map { FjalaItem(it) }),
-                    GermaFjaleItem("D", listOf("Dora", "Dorina", "Dorjana", "Doreta").map { FjalaItem(it) }),
-                    GermaFjaleItem("E", listOf("Elton", "Erion", "Elvis", "Ervin", "EEEEE").map { FjalaItem(it) }),
-                    GermaFjaleItem("F", listOf("Flori", "Feridi", "Fani", "Funi").map { FjalaItem(it) }),
-                    GermaFjaleItem("G", listOf("Goni", "Gimi", "Gani", "Gili", "GGG").map { FjalaItem(it) }),
-                    GermaFjaleItem("H", listOf("Harli", "Hurli", "Harbi", "Heri").map { FjalaItem(it) })
+                    GermaFjaleItem(
+                        "A",
+                        listOf("Alban", "Artan", "Arjan", "Azgan", "AAAA").map { FjalaItem(it) }),
+                    GermaFjaleItem(
+                        "B",
+                        listOf("Besa", "Besmira", "Besjan", "Blearta").map { FjalaItem(it) }),
+                    GermaFjaleItem(
+                        "C",
+                        listOf("Cen", "Cuf", "Car", "Cjap", "CCCC").map { FjalaItem(it) }),
+                    GermaFjaleItem(
+                        "D",
+                        listOf("Dora", "Dorina", "Dorjana", "Doreta").map { FjalaItem(it) }),
+                    GermaFjaleItem(
+                        "E",
+                        listOf("Elton", "Erion", "Elvis", "Ervin", "EEEEE").map { FjalaItem(it) }),
+                    GermaFjaleItem(
+                        "F",
+                        listOf("Flori", "Feridi", "Fani", "Funi").map { FjalaItem(it) }),
+                    GermaFjaleItem(
+                        "G",
+                        listOf("Goni", "Gimi", "Gani", "Gili", "GGG").map { FjalaItem(it) }),
+                    GermaFjaleItem(
+                        "H",
+                        listOf("Harli", "Hurli", "Harbi", "Heri").map { FjalaItem(it) })
                 )
 
             )
@@ -152,6 +197,13 @@ class DemoViewModel : ViewModel() {
                 data.add(KokaItem("ku ku ku $i"))
             }
         }
+
+
+//        data.clear()
+//        for (i in 0..100) {
+//            data.add(HeaderItem("Element $i"))
+//        }
+
 
 
         dataList.postValue(data)

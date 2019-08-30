@@ -9,13 +9,19 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlin.reflect.KClass
 
 //internal class, you should not care about this
-open class BaseViewHolder<T : BaseDataItem>(view: View, val holder: ViewHolderz<T>) : RecyclerView.ViewHolder(view) {
+open class BaseViewHolder<T : BaseDataItem>(val view: View, val holder: ViewHolderz<T>) :
+    RecyclerView.ViewHolder(view) {
     init {
         holder.initViewHolder(view)
     }
+
 }
 
-open class BaseComposedViewHolder<T : BaseComposedDataItem>(view: View, holder: ViewHolderz<T>, val adapter: AdapterZ) :
+open class BaseComposedViewHolder<T : BaseComposedDataItem>(
+    view: View,
+    holder: ViewHolderz<T>,
+    val adapter: AdapterZ
+) :
     BaseViewHolder<T>(view, holder) {
 
     init {
@@ -32,7 +38,7 @@ abstract class ViewHolderz<T : BaseDataItem>(val layoutResource: Int, val tClass
     }
 
     open fun doBind(model: T) {
-
+        ">>>>>>> bind : = $model".logz()
     }
 
     fun getTypez(): Int {
@@ -42,29 +48,39 @@ abstract class ViewHolderz<T : BaseDataItem>(val layoutResource: Int, val tClass
     }
 }
 
-open class ViewRenderZ<T : BaseDataItem>(val viewHolder: ViewHolderz<T>) {
+open class ViewRenderZ<T : BaseDataItem>(tClass: KClass<T>, val viewHolderZ: () -> ViewHolderz<T>) {
+
 
     open fun createViewHolder(parent: ViewGroup): BaseViewHolder<out BaseDataItem> {
+        val viewHolder = viewHolderZ.invoke()
+
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(viewHolder.layoutResource, parent, false)
 
-        return BaseViewHolder(view, viewHolder)
+        val vh = BaseViewHolder(view, viewHolder)
+        return vh
     }
 
     open fun bindTo(holder: BaseViewHolder<out BaseDataItem>, item: BaseDataItem) {
+        //Bad fix
+        //(holder as BaseViewHolder<T>).holder.initViewHolder(holder.itemView)
         (holder as BaseViewHolder<T>).holder.doBind(item as T)
     }
 
-    val typez = viewHolder.getTypez()
+    val type = tClass.getIdz()
+//    val typez = viewHolderZ.getTypez()
 
 }
 
 
 open class CompositeViewRenderZ<T : BaseComposedDataItem>(
-    viewHolder: ViewHolderz<T>,
+    tClass: KClass<T>,
+    private val viewHolder: () -> ViewHolderz<T>,
     private val recyclerResourceId: Int,
+    private val snap: Boolean = false,
     private val setupRecycler: (RecyclerView) -> Any = {}
-) : ViewRenderZ<T>(viewHolder) {
+) : ViewRenderZ<T>(tClass, viewHolder) {
+
 
     var recycledViewPool: RecyclerView.RecycledViewPool? = null
 
@@ -76,12 +92,13 @@ open class CompositeViewRenderZ<T : BaseComposedDataItem>(
 //    }
 
     fun addRenderer(rendered: ViewRenderZ<out BaseDataItem>) {
-        renderz[rendered.typez] = rendered
+        renderz[rendered.type] = rendered
     }
 
 
     override fun createViewHolder(parent: ViewGroup): BaseComposedViewHolder<T> {
 
+        val viewHolder = viewHolder.invoke()
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(viewHolder.layoutResource, parent, false)
         val recycler = view.findViewById<RecyclerView>(recyclerResourceId)
@@ -94,12 +111,14 @@ open class CompositeViewRenderZ<T : BaseComposedDataItem>(
             recycler.setRecycledViewPool(it)
         }
 
-        recycler.layoutManager = LinearLayoutManager(recycler.context, RecyclerView.HORIZONTAL, false)
+        recycler.layoutManager =
+            LinearLayoutManager(recycler.context, RecyclerView.HORIZONTAL, false)
         recycler.setHasFixedSize(true)
 
-        val snapHelper = LinearSnapHelper()
-        snapHelper.attachToRecyclerView(recycler)
-
+        if (snap) {
+            val snapHelper = LinearSnapHelper()
+            snapHelper.attachToRecyclerView(recycler)
+        }
         recycler.isNestedScrollingEnabled = false
         recycler.adapter = childAdapter
 
