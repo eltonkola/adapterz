@@ -2,6 +2,7 @@ package com.eltonkola.adapterz
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
@@ -13,8 +14,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.eltonkola.adapterz_lib.AdapterZ
 import com.eltonkola.adapterz_lib.BaseComposedDataItem
 import com.eltonkola.adapterz_lib.BaseDataItem
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.row_alfabeti_container.view.*
+import kotlinx.android.synthetic.main.row_germa.view.*
 import kotlinx.android.synthetic.main.row_header.view.*
 import kotlin.random.Random
 
@@ -51,36 +55,73 @@ class MainActivity : AppCompatActivity() {
         })
 
         //title_germa
-//        val vkAdapter = VkAdapter()
-//
-//        vkAdapter.addRenderer(VkRenderer(R.layout.row_header, {
-//            object : VhRenderer<HeaderItem>() {
-//
-//                lateinit var title_header: TextView
-//
-//                override fun initUi(view: View) {
-//                    title_header = view.title_header
-//                }
-//
-//                override fun doBind(item: HeaderItem) {
-//                    title_header.text = item.title
-//                }
-//            }
-//        }, HeaderItem::class))
+        val vkAdapter = VkAdapter()
+
+        vkAdapter.addRenderer(VkRenderer(R.layout.row_header, {
+            object : VhViewHolder<HeaderItem> {
+
+                lateinit var title_header: TextView
+
+                override fun initUi(view: View) {
+                    title_header = view.title_header
+                }
+
+                override fun doBind(item: HeaderItem) {
+                    title_header.text = item.title
+                }
+            }
+        }, HeaderItem::class))
 
 
+        val germaVh = VkRenderer(R.layout.row_germa, {
+            object : VhViewHolder<GermaItem> {
 
-        recyclerView.adapter = adapter
+                lateinit var title_germa: TextView
+
+                override fun initUi(view: View) {
+                    title_germa = view.title_germa
+                }
+
+                override fun doBind(item: GermaItem) {
+                    title_germa.text = item.germa
+                }
+            }
+        }, GermaItem::class)
+
+        vkAdapter.addRenderer(
+            VkCompositeRenderer(R.layout.row_alfabeti_container, {
+                object : VhViewHolder<AlfabetiItem> {
+
+                    lateinit var container_title: TextView
+                    lateinit var container_icon: ImageView
+
+                    override fun initUi(view: View) {
+                        container_title = view.container_title
+                        container_icon = view.container_icon
+                    }
+
+                    override fun doBind(item: AlfabetiItem) {
+                        container_title.text = item.name
+                        Picasso.get().load(item.flagUrl).into(container_icon)
+                    }
+                }
+            }, AlfabetiItem::class, R.id.childRecycler).apply { addRenderer(germaVh) })
 
 
-        viewModel.dataList.observe(this, Observer { list ->
-            adapter.submitList(list)
-            //vkAdapter.submitList(list)
+                    recyclerView . adapter = vkAdapter
 
-        })
-        recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+
+                    viewModel.dataList.observe(this, Observer { list ->
+                        adapter.submitList(list)
+                        vkAdapter.submitList(list)
+
+                    })
+                    recyclerView . layoutManager = LinearLayoutManager (this,
+            RecyclerView.VERTICAL,
+            false
+        )
         recyclerView.setHasFixedSize(true)
-        //recyclerView.adapter = adapter
+//        recyclerView.adapter = adapter
 
 
         fab.setOnClickListener { view ->
@@ -199,10 +240,22 @@ class DemoViewModel : ViewModel() {
         }
 
 
-//        data.clear()
-//        for (i in 0..100) {
-//            data.add(HeaderItem("Element $i"))
-//        }
+        data.clear()
+
+        data.add(
+            AlfabetiItem("Shqip",
+                "https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/shiny/64/Albania.png",
+                listOf(
+                    "A", "B", "C", "Ç", "D", "Dh", "E", "Ë", "F", "G", "Gj",
+                    "H", "I", "J", "K", "L", "Ll", "M", "N", "Nj", "O", "P", "Q",
+                    "R", "Rr", "S", "Sh", "T", "Th", "U", "V", "X", "Xh", "Y", "Z", "Zh"
+                ).map { GermaItem(it) })
+        )
+
+
+        for (i in 0..100) {
+            data.add(HeaderItem("Element $i"))
+        }
 
 
 
