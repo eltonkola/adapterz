@@ -35,7 +35,8 @@ open class CompositeViewRenderZ<T : BaseComposedDataItem>(
     layoutResource: Int,
     doBind: (BaseViewHolder<T>, T) -> Any,
     private val recyclerResourceId: Int,
-    private val setupRecycler: (RecyclerView) -> Any = {}
+    private val setupRecycler: (RecyclerView) -> Any = {},
+    private val snap: Boolean? = false
 ) : ViewRenderZ<T>(layoutResource, doBind) {
 
     var recycledViewPool: RecyclerView.RecycledViewPool? = null
@@ -60,10 +61,12 @@ open class CompositeViewRenderZ<T : BaseComposedDataItem>(
 
         recycler.layoutManager = LinearLayoutManager(recycler.context, RecyclerView.HORIZONTAL, false)
         recycler.setHasFixedSize(true)
-
-        val snapHelper = LinearSnapHelper()
-        snapHelper.attachToRecyclerView(recycler)
-
+        snap?.let {
+            if(it) {
+                val snapHelper = LinearSnapHelper()
+                snapHelper.attachToRecyclerView(recycler)
+            }
+        }
         recycler.isNestedScrollingEnabled = false
         recycler.adapter = childAdapter
 

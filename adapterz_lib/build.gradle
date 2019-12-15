@@ -53,7 +53,7 @@ ext {
 
     publishedGroupId = 'com.eltonkola'
     artifact = 'adapterz'
-    libraryVersion = '0.0.1'
+    libraryVersion = '0.0.1.1'
 
     libraryName = 'AdapterZ'
     libraryDescription = 'No more adapters for your recyclerviews.'
